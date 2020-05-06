@@ -1,12 +1,19 @@
-from apis.serializers import ProfileSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAdminUser
 
+from apis.serializers import ProfileSerializer
+from main.models import Profile, Address
+
 
 class UserProfileCreateView(APIView):
     permission_classes = [IsAdminUser]
+
+    def get(self, format=None):
+        profiles = Profile.objects.all()
+        serializer = ProfileSerializer(profiles, many=True)
+        return Response(serializer.data)
 
     def post(self, request):
         serializer = ProfileSerializer(data=request.POST)
