@@ -38,7 +38,7 @@ A ChatBot for essential communication and relief during the Covid-19 Crisis
         "locality": "DEF",
         "city": "Ghaziabad",
         "pin_code": 201002
-    }
+    },
     "profile_type": "authorities"
 }
 ```
