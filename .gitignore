@@ -1,2 +1,4 @@
 communiquer/.idea
-communiquer/db.sq;ite3
+communiquer/db.sqlite3
+.idea
+communiquer/.git

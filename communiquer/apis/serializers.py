@@ -24,7 +24,8 @@ class UserSerializer(serializers.ModelSerializer):
 class AddressSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
-        address = Address.objects.create_user(**validated_data)
+        address = Address(**validated_data)
+        address.save()
         return address
 
     class Meta:

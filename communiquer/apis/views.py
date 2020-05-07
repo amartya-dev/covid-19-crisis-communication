@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAdminUser
 
 from apis.serializers import ProfileSerializer
-from main.models import Profile, Address
+from main.models import Profile
 
 
 class UserProfileCreateView(APIView):
@@ -16,7 +16,7 @@ class UserProfileCreateView(APIView):
         return Response(serializer.data)
 
     def post(self, request):
-        serializer = ProfileSerializer(data=request.POST)
+        serializer = ProfileSerializer(data=request.data)
         if serializer.is_valid(raise_exception=ValueError):
             serializer.create(validated_data=request.data)
             return Response(
