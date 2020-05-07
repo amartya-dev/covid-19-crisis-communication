@@ -17,3 +17,28 @@ A ChatBot for essential communication and relief during the Covid-19 Crisis
 ## Secondary
 - [ ] USSD based menu for offline information (possibly IVR)
 - [ ] Speech to text for automated detection of request from the recorded calls.
+
+# API
+
+- Endpoint: /users/
+
+- Format
+
+```json
+{
+    "user": {
+        "username": "admin",
+        "first_name": "",
+        "last_name": "",
+        "email": "",
+        "password": "pbkdf2_sha256$180000$KBmwpa1k0otJ$XYnAR07X5jk7gDAyN1n0cxzY13lFLQug2NwUnCNB4ng="
+    },
+    "address": {
+        "street_address": "ABD",
+        "locality": "DEF",
+        "city": "Ghaziabad",
+        "pin_code": 201002
+    }
+    "profile_type": "authorities"
+}
+```
