@@ -27,7 +27,8 @@ class _LoginFormState extends State<LoginForm> {
   UserRepository get _userRepository => widget._userRepository;
 
   bool get isPopulated =>
-      _usernameController.text.isNotEmpty && _passwordController.text.isNotEmpty;
+      _usernameController.text.isNotEmpty &&
+      _passwordController.text.isNotEmpty;
 
   bool isLoginButtonEnabled(LoginState state) {
     return state.isFormValid && isPopulated && !state.isSubmitting;
@@ -81,56 +82,72 @@ class _LoginFormState extends State<LoginForm> {
         builder: (context, state) {
           return Center(
             child: Padding(
-            padding: EdgeInsets.all(30.0),
-            child: Form(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  TextFormField(
-                    controller: _usernameController,
-                    decoration: InputDecoration(
-                      icon: Icon(Icons.person),
-                      labelText: 'Username',
-                    ),
-                    keyboardType: TextInputType.text,
-                    autovalidate: true,
-                    autocorrect: false,
-                    validator: (_) {
-                      return !state.isUsernameValid ? 'Invalid Username' : null;
-                    },
-                  ),
-                  TextFormField(
-                    controller: _passwordController,
-                    decoration: InputDecoration(
-                      icon: Icon(Icons.lock),
-                      labelText: 'Password',
-                    ),
-                    obscureText: true,
-                    autovalidate: true,
-                    autocorrect: false,
-                    validator: (_) {
-                      return !state.isPasswordValid ? 'Invalid Password' : null;
-                    },
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: 20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: <Widget>[
-                        LoginButton(
-                          onPressed: isLoginButtonEnabled(state)
-                              ? _onFormSubmitted
-                              : null,
+              padding: EdgeInsets.all(60.0),
+              child: Form(
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      TextFormField(
+                        controller: _usernameController,
+                        decoration: InputDecoration(
+                          icon: Icon(Icons.person),
+                          labelText: 'Username',
+                          labelStyle: TextStyle(
+                            color: Colors.black
+                          ),
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.black)
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.black)
+                          )
                         ),
-                        CreateAccountButton(userRepository: _userRepository),
-                      ],
-                    ),
+                        keyboardType: TextInputType.text,
+                        autovalidate: true,
+                        autocorrect: false,
+                        validator: (_) {
+                          return !state.isUsernameValid
+                              ? 'Invalid Username'
+                              : null;
+                        },
+                      ),
+                      TextFormField(
+                        controller: _passwordController,
+                        decoration: InputDecoration(
+                          icon: Icon(Icons.lock),
+                          labelText: 'Password',
+                        ),
+                        obscureText: true,
+                        autovalidate: true,
+                        autocorrect: false,
+                        validator: (_) {
+                          return !state.isPasswordValid
+                              ? 'Invalid Password'
+                              : null;
+                        },
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(vertical: 20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: <Widget>[
+                            LoginButton(
+                              onPressed: isLoginButtonEnabled(state)
+                                  ? _onFormSubmitted
+                                  : null,
+                            ),
+                            CreateAccountButton(
+                                userRepository: _userRepository),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
-          ),
           );
         },
       ),

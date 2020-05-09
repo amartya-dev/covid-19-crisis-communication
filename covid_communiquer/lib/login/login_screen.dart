@@ -16,13 +16,61 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Login')),
+      backgroundColor: Colors.white,
       body: BlocProvider<LoginBloc>(
-        create: (context) => LoginBloc(userRepository: _userRepository),
-        child: Center(
-          child: LoginForm(userRepository: _userRepository),
-        )
-      ),
+          create: (context) => LoginBloc(userRepository: _userRepository),
+          child: Stack(
+            children: <Widget>[
+              ClipRRect(
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(90.0),
+                  ),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.orange,
+                  ),
+                  height: MediaQuery.of(context).size.height * 0.32,
+                  width: MediaQuery.of(context).size.width,
+                  child: Container(
+                    padding: EdgeInsets.only(
+                      top: MediaQuery.of(context).size.height * 0.13
+                    ),
+                    child: Text(
+                      "LOGIN",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 40.0,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.only(
+                  top: MediaQuery.of(context).size.height * 0.1
+                ),
+                child: LoginForm(userRepository: _userRepository),
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: <Widget>[
+                  ClipRRect(
+                    borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(150.0) 
+                    ),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.black
+                      ),
+                      height: MediaQuery.of(context).size.height * 0.07,
+                    ),
+                  )
+                ],
+              )
+            ],
+          )),
     );
   }
 }

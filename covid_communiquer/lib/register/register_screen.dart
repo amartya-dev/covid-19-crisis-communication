@@ -16,7 +16,10 @@ class RegisterScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Register')),
+      appBar: AppBar(
+        title: Text('Register'),
+        backgroundColor: Colors.orange,
+      ),
       body: Center(
         child: BlocProvider<RegisterBloc>(
           create: (context) => RegisterBloc(userRepository: _userRepository),
