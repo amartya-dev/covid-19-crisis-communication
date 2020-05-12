@@ -85,7 +85,7 @@ class BotCommunicateView(APIView):
         ).get_result()
         response_messages = ""
         for message in response["output"]["generic"]:
-            response_messages += message["text"] + "\n"
+            response_messages += message["text"]
         return Response(
             {
                 "response": response_messages
