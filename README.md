@@ -20,25 +20,83 @@ A ChatBot for essential communication and relief during the Covid-19 Crisis
 
 # API
 
-- Endpoint: /users/
+- Endpoint /api-token-auth/
+    - Method: POST
+    - Request Body:
+    ```json
+    {
+        "username": "<username>",
+        "password": "<password>"
+    }
+    ```
+    - Response
+    ```json
+    {
+        "token": "<access_token>"
+    }
+    ```
 
-- Format
+- Endpoint: /api/users/
+    - Method: POST
+    - Headers:
+    ```json
+    {
+        "Authorization": "TOKEN <token>"
+    }
+    ```
+    - Request Body
+    ```json
+    {
+        "user": {
+            "username": "<username>",
+            "first_name": "<first_name>",
+            "last_name": "<last_name>",
+            "email": "<your_email>",
+            "password": "<password_string>"
+        },
+        "address": {
+            "street_address": "ABD",
+            "locality": "DEF",
+            "city": "Delhi",
+            "pin_code": 123123
+        },
+        "profile_type": "authorities"
+    }
+    ```
 
-```json
-{
-    "user": {
-        "username": "admin",
-        "first_name": "",
-        "last_name": "",
-        "email": "",
-        "password": "pbkdf2_sha256$180000$KBmwpa1k0otJ$XYnAR07X5jk7gDAyN1n0cxzY13lFLQug2NwUnCNB4ng="
-    },
-    "address": {
-        "street_address": "ABD",
-        "locality": "DEF",
-        "city": "Ghaziabad",
-        "pin_code": 201002
-    },
-    "profile_type": "authorities"
-}
-```
+- Endpoint: /api/create_session/
+
+    - Headers
+
+    ```json
+    {
+        "Authorization": "TOKEN <token>"
+    }
+    ``` 
+    - Response
+    ```json
+    {
+        "session_id": "<session_id>"
+    }
+    ```
+
+- Endpoint: /api/chat/
+    - Heaaders
+    ```json
+    {
+        "Authorization": "TOKEN <token>"
+    }
+    ```
+    - Request Body
+    ```json
+    {
+        "session_id": "<session_id>",
+        "message": "<message_you_want_to_send>"
+    }
+    ```
+    - Response
+    ```json
+    {
+        "response": "<response_from_the_bot>"
+    }
+    ```
