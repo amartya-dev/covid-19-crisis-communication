@@ -102,7 +102,7 @@ A ChatBot for essential communication and relief during the Covid-19 Crisis
     ```
 # Snapshots
 
-! [Login Screen](/Snapshots/LoginScreen)
-! [Chatbot Screen](/Snapshots/Chatbot)
+![Login Screen](/Snapshots/LoginScreen)
+![Chatbot Screen](/Snapshots/Chatbot)
 
 
