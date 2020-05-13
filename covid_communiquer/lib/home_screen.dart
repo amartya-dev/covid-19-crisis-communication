@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'dart:async';
 import 'package:covid_communiquer/bloc/authentication_bloc.dart';
-
+import 'package:covid_communiquer/api_connection/api_connection.dart';
 
 class HomeScreen extends StatefulWidget {
   final String name;
 
   HomeScreen({Key key, @required this.name}) : super(key: key);
 
-  @override 
+  @override
   _HomeScreen createState() => new _HomeScreen(name: name);
 }
 
@@ -17,16 +19,25 @@ class _HomeScreen extends State<HomeScreen> {
   final String name;
   final List<ChatMessage> _messages = <ChatMessage>[];
   final TextEditingController _textController = new TextEditingController();
+  final _base = "https://communiquer.herokuapp.com";
+  final _sessionEndpoint = "/api/create_session/";
+  final _chatEndpoint = "/api/chat";
+  String _sessionID;
 
-  _HomeScreen(
-    {@ required this.name}
-  );
+  @override
+  void initState() {
+//    _getThingsOnStartup().then((value){
+//      print('Async done');
+//    });
+    _createSession();
+    super.initState();
+  }
 
-  Widget _buildTextComposer () {
+  _HomeScreen({@required this.name});
+
+  Widget _buildTextComposer() {
     return IconTheme(
-      data: IconThemeData(
-        color: Theme.of(context).accentColor
-      ),
+      data: IconThemeData(color: Theme.of(context).accentColor),
       child: new Row(
         children: <Widget>[
           Flexible(
@@ -39,9 +50,7 @@ class _HomeScreen extends State<HomeScreen> {
             ),
           ),
           Container(
-            margin: EdgeInsets.symmetric(
-              horizontal: 6.0
-            ),
+            margin: EdgeInsets.symmetric(horizontal: 6.0),
             child: IconButton(
               icon: Icon(Icons.send),
               onPressed: () => _handleSubmitted(_textController.text),
@@ -51,9 +60,47 @@ class _HomeScreen extends State<HomeScreen> {
       ),
     );
   }
-
+  void _createSession() async {
+    print("Inside createSession function()");
+    final _createSessionURL = _base + _sessionEndpoint;
+    final String adminToken = await getAdminToken();
+    final http.Response response =
+    await http.post(_createSessionURL, headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': 'TOKEN $adminToken'
+    });
+    if (response.statusCode == 200) {
+//      return Token.fromJson(json.decode(response.body));
+      _sessionID = (json.decode(response.body))['session_id'];
+      print(_sessionID);
+    } else {
+      print(json.decode(response.body).toString());
+      throw Exception(json.decode(response.body));
+    }
+  }
   void response(query) async {
-    
+    print("Inside response()");
+    final String adminToken = await getAdminToken();
+    final String _chatURL = _base + _chatEndpoint;
+    print("Session ID:  "+  _sessionID);
+    final http.Response response = await http.post(_chatURL,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'TOKEN $adminToken'
+        },
+        body: jsonEncode(<String, String>{
+          'session_id': _sessionID,
+          'message': query
+        })
+    );
+    if (response.statusCode == 200) {
+//      return Token.fromJson(json.decode(response.body));
+      print((json.decode(response.body))['response']);
+//      _sessionID = (json.decode(response.body))['session_id'];
+    } else {
+      print(json.decode(response.body).toString());
+      throw Exception(json.decode(response.body));
+    }
     ChatMessage message = ChatMessage(
       text: "Sample Response",
       name: "Bot",
@@ -66,7 +113,7 @@ class _HomeScreen extends State<HomeScreen> {
 
   void _handleSubmitted(String text) {
     _textController.clear();
-    ChatMessage message = new ChatMessage (
+    ChatMessage message = new ChatMessage(
       text: text,
       name: this.name,
       type: true,
@@ -76,6 +123,8 @@ class _HomeScreen extends State<HomeScreen> {
     });
     response(text);
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -104,11 +153,11 @@ class _HomeScreen extends State<HomeScreen> {
               itemCount: _messages.length,
             ),
           ),
-          Divider(height: 2.0,),
+          Divider(
+            height: 2.0,
+          ),
           Container(
-            decoration: BoxDecoration(
-              color: Theme.of(context).cardColor
-            ),
+            decoration: BoxDecoration(color: Theme.of(context).cardColor),
             child: _buildTextComposer(),
           )
         ],
@@ -124,7 +173,7 @@ class ChatMessage extends StatelessWidget {
 
   ChatMessage({this.text, this.name, this.type});
 
-  List<Widget> otherMessage (context) {
+  List<Widget> otherMessage(context) {
     return <Widget>[
       Container(
         margin: EdgeInsets.only(right: 16.0),
@@ -138,9 +187,7 @@ class ChatMessage extends StatelessWidget {
           children: <Widget>[
             Text(
               this.name,
-              style: TextStyle(
-                fontWeight: FontWeight.bold
-              ),
+              style: TextStyle(fontWeight: FontWeight.bold),
             ),
             Container(
               margin: EdgeInsets.only(),
@@ -152,8 +199,8 @@ class ChatMessage extends StatelessWidget {
     ];
   }
 
-  List<Widget> myMessage (context) {
-    return <Widget> [
+  List<Widget> myMessage(context) {
+    return <Widget>[
       Expanded(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
@@ -163,9 +210,7 @@ class ChatMessage extends StatelessWidget {
               style: Theme.of(context).textTheme.subhead,
             ),
             Container(
-              margin: EdgeInsets.only(
-                top: 5.0
-              ),
+              margin: EdgeInsets.only(top: 5.0),
               child: Text(text),
             )
           ],
@@ -175,10 +220,8 @@ class ChatMessage extends StatelessWidget {
         margin: EdgeInsets.only(left: 16.0),
         child: CircleAvatar(
           child: Text(
-            this.name[0],
-            style: TextStyle(
-              fontWeight: FontWeight.bold
-            ),
+            (this.name[0]).toUpperCase(),
+            style: TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
       )
@@ -186,7 +229,7 @@ class ChatMessage extends StatelessWidget {
   }
 
   @override
-  Widget build (BuildContext context) {
+  Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 10.0),
       child: Row(

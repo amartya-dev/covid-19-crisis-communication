@@ -29,6 +29,7 @@ dependencies:
   equatable: ^1.1.1
   flutter_bloc: ^4.0.0
   rxdart: ^0.24.0
+  watson_assistant: ^0.0.3
 
 dev_dependencies:
   flutter_test:
