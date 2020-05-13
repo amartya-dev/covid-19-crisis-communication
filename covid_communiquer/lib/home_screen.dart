@@ -82,7 +82,6 @@ class _HomeScreen extends State<HomeScreen> {
     print("Inside response()");
     final String adminToken = await getAdminToken();
     final String _chatURL = _base + _chatEndpoint;
-    print("Session ID:  "+  _sessionID);
     try{
       final http.Response response = await http.post(_chatURL,
           headers: <String, String>{
@@ -94,23 +93,19 @@ class _HomeScreen extends State<HomeScreen> {
             'message': query
           })
       );
-      print("Response" + response.body);
       if (response.statusCode == 200) {
-//      return Token.fromJson(json.decode(response.body));
-        print((json.decode(response.body))['response']);
-//      _sessionID = (json.decode(response.body))['session_id'];
+        ChatMessage message = ChatMessage(
+          text: (json.decode(response.body))['response'],
+          name: "Bot",
+          type: false,
+        );
+        setState(() {
+          _messages.insert(0, message);
+        });
       } else {
         print(json.decode(response.body).toString());
         throw Exception(json.decode(response.body));
       }
-      ChatMessage message = ChatMessage(
-        text: (json.decode(response.body))['response'],
-        name: "Bot",
-        type: false,
-      );
-      setState(() {
-        _messages.insert(0, message);
-      });
     }catch(err){
       print(err);
     }
