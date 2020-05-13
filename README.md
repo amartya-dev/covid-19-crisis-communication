@@ -100,3 +100,9 @@ A ChatBot for essential communication and relief during the Covid-19 Crisis
         "response": "<response_from_the_bot>"
     }
     ```
+# Snapshots
+
+![Login Screen](https://github.com/amartya-dev/covid-19-crisis-communication/blob/master/Snapshots/LoginScreen.jpeg)
+![Chatbot Screen](https://github.com/amartya-dev/covid-19-crisis-communication/blob/master/Snapshots/Chatbot.jpeg)
+
+
