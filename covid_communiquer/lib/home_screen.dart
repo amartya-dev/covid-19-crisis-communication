@@ -64,18 +64,23 @@ class _HomeScreen extends State<HomeScreen> {
     print("Inside createSession function()");
     final _createSessionURL = _base + _sessionEndpoint;
     final String adminToken = await getAdminToken();
-    final http.Response response =
+    final http.Response resp =
     await http.post(_createSessionURL, headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
       'Authorization': 'TOKEN $adminToken'
     });
-    if (response.statusCode == 200) {
+    if (resp.statusCode == 200) {
 //      return Token.fromJson(json.decode(response.body));
-      _sessionID = (json.decode(response.body))['session_id'];
+      _sessionID = (json.decode(resp.body))['session_id'];
       print(_sessionID);
+      response("hello");
+//      Future.delayed(const Duration(milliseconds: 2000), () {
+//        response("hello");
+//      });
+
     } else {
-      print(json.decode(response.body).toString());
-      throw Exception(json.decode(response.body));
+      print(json.decode(resp.body).toString());
+      throw Exception(json.decode(resp.body));
     }
   }
   void response(query) async {
@@ -83,7 +88,7 @@ class _HomeScreen extends State<HomeScreen> {
     final String adminToken = await getAdminToken();
     final String _chatURL = _base + _chatEndpoint;
     try{
-      final http.Response response = await http.post(_chatURL,
+      final http.Response resp = await http.post(_chatURL,
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
             'Authorization': 'TOKEN $adminToken'
@@ -93,9 +98,12 @@ class _HomeScreen extends State<HomeScreen> {
             'message': query
           })
       );
-      if (response.statusCode == 200) {
+      if (resp.statusCode == 200) {
+//        if((json.decode(resp.body))['response'] == "I don't know the answer to that yet"){
+//          response("hello");
+//        }
         ChatMessage message = ChatMessage(
-          text: (json.decode(response.body))['response'],
+          text: (json.decode(resp.body))['response'],
           name: "Bot",
           type: false,
         );
@@ -103,8 +111,8 @@ class _HomeScreen extends State<HomeScreen> {
           _messages.insert(0, message);
         });
       } else {
-        print(json.decode(response.body).toString());
-        throw Exception(json.decode(response.body));
+        print(json.decode(resp.body).toString());
+        throw Exception(json.decode(resp.body));
       }
     }catch(err){
       print(err);
