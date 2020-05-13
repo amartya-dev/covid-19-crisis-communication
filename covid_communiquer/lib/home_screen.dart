@@ -21,7 +21,7 @@ class _HomeScreen extends State<HomeScreen> {
   final TextEditingController _textController = new TextEditingController();
   final _base = "https://communiquer.herokuapp.com";
   final _sessionEndpoint = "/api/create_session/";
-  final _chatEndpoint = "/api/chat";
+  final _chatEndpoint = "/api/chat/";
   String _sessionID;
 
   @override
@@ -83,32 +83,39 @@ class _HomeScreen extends State<HomeScreen> {
     final String adminToken = await getAdminToken();
     final String _chatURL = _base + _chatEndpoint;
     print("Session ID:  "+  _sessionID);
-    final http.Response response = await http.post(_chatURL,
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-          'Authorization': 'TOKEN $adminToken'
-        },
-        body: jsonEncode(<String, String>{
-          'session_id': _sessionID,
-          'message': query
-        })
-    );
-    if (response.statusCode == 200) {
+    try{
+      final http.Response response = await http.post(_chatURL,
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            'Authorization': 'TOKEN $adminToken'
+          },
+          body: jsonEncode(<String, String>{
+            'session_id': _sessionID,
+            'message': query
+          })
+      );
+      print("Response" + response.body);
+      if (response.statusCode == 200) {
 //      return Token.fromJson(json.decode(response.body));
-      print((json.decode(response.body))['response']);
+        print((json.decode(response.body))['response']);
 //      _sessionID = (json.decode(response.body))['session_id'];
-    } else {
-      print(json.decode(response.body).toString());
-      throw Exception(json.decode(response.body));
+      } else {
+        print(json.decode(response.body).toString());
+        throw Exception(json.decode(response.body));
+      }
+      ChatMessage message = ChatMessage(
+        text: (json.decode(response.body))['response'],
+        name: "Bot",
+        type: false,
+      );
+      setState(() {
+        _messages.insert(0, message);
+      });
+    }catch(err){
+      print(err);
     }
-    ChatMessage message = ChatMessage(
-      text: (json.decode(response.body))['response'],
-      name: "Bot",
-      type: false,
-    );
-    setState(() {
-      _messages.insert(0, message);
-    });
+
+
   }
 
   void _handleSubmitted(String text) {
