@@ -100,3 +100,10 @@ A ChatBot for essential communication and relief during the Covid-19 Crisis
         "response": "<response_from_the_bot>"
     }
     ```
+# Snapshots
+
+!(Login Screen)[/Snapshots/LoginScreen]
+
+!(Chatbot Screen)[/Snapshots/Chatbot]
+
+
