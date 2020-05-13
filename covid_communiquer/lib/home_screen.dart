@@ -44,9 +44,10 @@ class _HomeScreen extends State<HomeScreen> {
             child: TextField(
               controller: _textController,
               onSubmitted: _handleSubmitted,
-              decoration: InputDecoration.collapsed(
-                hintText: "Send a message",
-              ),
+              decoration: InputDecoration(
+                  hintText: "Send a message",
+                  hintStyle: TextStyle(color: Theme.of(context).accentColor),
+                  contentPadding: const EdgeInsets.all(20.0)),
             ),
           ),
           Container(
@@ -60,12 +61,13 @@ class _HomeScreen extends State<HomeScreen> {
       ),
     );
   }
+
   void _createSession() async {
     print("Inside createSession function()");
     final _createSessionURL = _base + _sessionEndpoint;
     final String adminToken = await getAdminToken();
     final http.Response resp =
-    await http.post(_createSessionURL, headers: <String, String>{
+        await http.post(_createSessionURL, headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
       'Authorization': 'TOKEN $adminToken'
     });
@@ -83,21 +85,19 @@ class _HomeScreen extends State<HomeScreen> {
       throw Exception(json.decode(resp.body));
     }
   }
+
   void response(query) async {
     print("Inside response()");
     final String adminToken = await getAdminToken();
     final String _chatURL = _base + _chatEndpoint;
-    try{
+    try {
       final http.Response resp = await http.post(_chatURL,
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
             'Authorization': 'TOKEN $adminToken'
           },
-          body: jsonEncode(<String, String>{
-            'session_id': _sessionID,
-            'message': query
-          })
-      );
+          body: jsonEncode(
+              <String, String>{'session_id': _sessionID, 'message': query}));
       if (resp.statusCode == 200) {
 //        if((json.decode(resp.body))['response'] == "I don't know the answer to that yet"){
 //          response("hello");
@@ -114,11 +114,9 @@ class _HomeScreen extends State<HomeScreen> {
         print(json.decode(resp.body).toString());
         throw Exception(json.decode(resp.body));
       }
-    }catch(err){
+    } catch (err) {
       print(err);
     }
-
-
   }
 
   void _handleSubmitted(String text) {
@@ -133,8 +131,6 @@ class _HomeScreen extends State<HomeScreen> {
     });
     response(text);
   }
-
-
 
   @override
   Widget build(BuildContext context) {
