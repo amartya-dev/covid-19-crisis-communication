@@ -102,7 +102,7 @@ class _HomeScreen extends State<HomeScreen> {
       throw Exception(json.decode(response.body));
     }
     ChatMessage message = ChatMessage(
-      text: "Sample Response",
+      text: (json.decode(response.body))['response'],
       name: "Bot",
       type: false,
     );
