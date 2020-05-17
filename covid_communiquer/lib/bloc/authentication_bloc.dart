@@ -1,10 +1,12 @@
 import 'dart:async';
-
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
 
 import 'package:covid_communiquer/repository/user_repository.dart';
+import 'package:covid_communiquer/api_connection/api_connection.dart';
 
 part 'authentication_event.dart';
 part 'authentication_state.dart';
@@ -12,6 +14,10 @@ part 'authentication_state.dart';
 
 class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
   final UserRepository _userRepository;
+  final _base = "https://communiquer.herokuapp.com";
+  final _sessionEndpoint = "/api/create_session/";
+  final _chatEndpoint = "/api/chat/";
+  String _sessionID;
 
   AuthenticationBloc(
     {@required UserRepository userRepository}
@@ -47,11 +53,30 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   }
 
   Stream<AuthenticationState> _mapLoggedInToState() async* {
+    _createSession();
     yield Authenticated(await _userRepository.getUser());
   }
 
   Stream<AuthenticationState> _mapLoggedOutToState() async* {
     _userRepository.signOut();
     yield Unauthenticated();
+  }
+
+  void _createSession() async {
+    print("Inside createSession function()");
+    final _createSessionURL = _base + _sessionEndpoint;
+    final String adminToken = await getAdminToken();
+    final http.Response resp =
+    await http.post(_createSessionURL, headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': 'TOKEN $adminToken'
+    });
+    if (resp.statusCode == 200) {
+      _sessionID = (json.decode(resp.body))['session_id'];
+      print("Session ID : " + _sessionID);
+    } else {
+      print(json.decode(resp.body).toString());
+      throw Exception(json.decode(resp.body));
+    }
   }
 }

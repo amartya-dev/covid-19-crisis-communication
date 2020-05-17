@@ -71,14 +71,15 @@ class UserRepository {
     await userDao.createUser(user);
   }
 
-  Future <void> delteToken({
+  Future <void> deleteToken({
     @required int id
   }) async {
     await userDao.deleteUser(id);
   }
 
   Future <void> signOut() async {
-    await delteToken(id: 0);
+    print("Logging out");
+    await deleteToken(id: 0);
   }
 
   Future <bool> hasToken() async {

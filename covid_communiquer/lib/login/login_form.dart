@@ -92,18 +92,13 @@ class _LoginFormState extends State<LoginForm> {
                       TextFormField(
                         controller: _usernameController,
                         decoration: InputDecoration(
-                          icon: Icon(Icons.person),
-                          labelText: 'Username',
-                          labelStyle: TextStyle(
-                            color: Colors.black
-                          ),
-                          enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black)
-                          ),
-                          focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black)
-                          )
-                        ),
+                            icon: Icon(Icons.person),
+                            labelText: 'Username',
+                            labelStyle: TextStyle(color: Colors.black),
+                            enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.black)),
+                            focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.black))),
                         keyboardType: TextInputType.text,
                         autovalidate: true,
                         autocorrect: false,

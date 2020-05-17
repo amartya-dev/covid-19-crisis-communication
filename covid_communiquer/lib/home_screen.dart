@@ -4,7 +4,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:async';
 import 'package:covid_communiquer/bloc/authentication_bloc.dart';
-import 'package:covid_communiquer/api_connection/api_connection.dart';
+import 'package:covid_communiquer/chat/bloc/chat_bloc.dart';
+//import 'package:covid_communiquer/api_connection/api_connection.dart';
 
 class HomeScreen extends StatefulWidget {
   final String name;
@@ -19,19 +20,7 @@ class _HomeScreen extends State<HomeScreen> {
   final String name;
   final List<ChatMessage> _messages = <ChatMessage>[];
   final TextEditingController _textController = new TextEditingController();
-  final _base = "https://communiquer.herokuapp.com";
-  final _sessionEndpoint = "/api/create_session/";
-  final _chatEndpoint = "/api/chat/";
-  String _sessionID;
 
-  @override
-  void initState() {
-//    _getThingsOnStartup().then((value){
-//      print('Async done');
-//    });
-    _createSession();
-    super.initState();
-  }
 
   _HomeScreen({@required this.name});
 
@@ -62,62 +51,38 @@ class _HomeScreen extends State<HomeScreen> {
     );
   }
 
-  void _createSession() async {
-    print("Inside createSession function()");
-    final _createSessionURL = _base + _sessionEndpoint;
-    final String adminToken = await getAdminToken();
-    final http.Response resp =
-        await http.post(_createSessionURL, headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-      'Authorization': 'TOKEN $adminToken'
-    });
-    if (resp.statusCode == 200) {
-//      return Token.fromJson(json.decode(response.body));
-      _sessionID = (json.decode(resp.body))['session_id'];
-      print(_sessionID);
-      response("hello");
-//      Future.delayed(const Duration(milliseconds: 2000), () {
-//        response("hello");
-//      });
-
-    } else {
-      print(json.decode(resp.body).toString());
-      throw Exception(json.decode(resp.body));
-    }
-  }
-
-  void response(query) async {
-    print("Inside response()");
-    final String adminToken = await getAdminToken();
-    final String _chatURL = _base + _chatEndpoint;
-    try {
-      final http.Response resp = await http.post(_chatURL,
-          headers: <String, String>{
-            'Content-Type': 'application/json; charset=UTF-8',
-            'Authorization': 'TOKEN $adminToken'
-          },
-          body: jsonEncode(
-              <String, String>{'session_id': _sessionID, 'message': query}));
-      if (resp.statusCode == 200) {
-//        if((json.decode(resp.body))['response'] == "I don't know the answer to that yet"){
-//          response("hello");
-//        }
-        ChatMessage message = ChatMessage(
-          text: (json.decode(resp.body))['response'],
-          name: "Bot",
-          type: false,
-        );
-        setState(() {
-          _messages.insert(0, message);
-        });
-      } else {
-        print(json.decode(resp.body).toString());
-        throw Exception(json.decode(resp.body));
-      }
-    } catch (err) {
-      print(err);
-    }
-  }
+//  void response(query) async {
+//    print("Inside response()");
+//    final String adminToken = await getAdminToken();
+//    final String _chatURL = _base + _chatEndpoint;
+//    try {
+//      final http.Response resp = await http.post(_chatURL,
+//          headers: <String, String>{
+//            'Content-Type': 'application/json; charset=UTF-8',
+//            'Authorization': 'TOKEN $adminToken'
+//          },
+//          body: jsonEncode(
+//              <String, String>{'session_id': _sessionID, 'message': query}));
+//      if (resp.statusCode == 200) {
+////        if((json.decode(resp.body))['response'] == "I don't know the answer to that yet"){
+////          response("hello");
+////        }
+//        ChatMessage message = ChatMessage(
+//          text: (json.decode(resp.body))['response'],
+//          name: "Bot",
+//          type: false,
+//        );
+//        setState(() {
+//          _messages.insert(0, message);
+//        });
+//      } else {
+//        print(json.decode(resp.body).toString());
+//        throw Exception(json.decode(resp.body));
+//      }
+//    } catch (err) {
+//      print(err);
+//    }
+//  }
 
   void _handleSubmitted(String text) {
     _textController.clear();
@@ -129,7 +94,7 @@ class _HomeScreen extends State<HomeScreen> {
     setState(() {
       _messages.insert(0, message);
     });
-    response(text);
+//    response(text);
   }
 
   @override
