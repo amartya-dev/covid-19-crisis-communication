@@ -21,7 +21,6 @@ class _HomeScreen extends State<HomeScreen> {
   final List<ChatMessage> _messages = <ChatMessage>[];
   final TextEditingController _textController = new TextEditingController();
 
-
   _HomeScreen({@required this.name});
 
   Widget _buildTextComposer() {
@@ -49,52 +48,6 @@ class _HomeScreen extends State<HomeScreen> {
         ],
       ),
     );
-  }
-
-//  void response(query) async {
-//    print("Inside response()");
-//    final String adminToken = await getAdminToken();
-//    final String _chatURL = _base + _chatEndpoint;
-//    try {
-//      final http.Response resp = await http.post(_chatURL,
-//          headers: <String, String>{
-//            'Content-Type': 'application/json; charset=UTF-8',
-//            'Authorization': 'TOKEN $adminToken'
-//          },
-//          body: jsonEncode(
-//              <String, String>{'session_id': _sessionID, 'message': query}));
-//      if (resp.statusCode == 200) {
-////        if((json.decode(resp.body))['response'] == "I don't know the answer to that yet"){
-////          response("hello");
-////        }
-//        ChatMessage message = ChatMessage(
-//          text: (json.decode(resp.body))['response'],
-//          name: "Bot",
-//          type: false,
-//        );
-//        setState(() {
-//          _messages.insert(0, message);
-//        });
-//      } else {
-//        print(json.decode(resp.body).toString());
-//        throw Exception(json.decode(resp.body));
-//      }
-//    } catch (err) {
-//      print(err);
-//    }
-//  }
-
-  void _handleSubmitted(String text) {
-    _textController.clear();
-    ChatMessage message = new ChatMessage(
-      text: text,
-      name: this.name,
-      type: true,
-    );
-    setState(() {
-      _messages.insert(0, message);
-    });
-//    response(text);
   }
 
   @override
@@ -135,7 +88,48 @@ class _HomeScreen extends State<HomeScreen> {
       ),
     );
   }
+
+  void _handleSubmitted(String text) {
+    _textController.clear();
+    ChatMessage message = new ChatMessage(
+      text: text,
+      name: this.name,
+      type: true,
+    );
+    setState(() {
+      _messages.insert(0, message);
+    });
+//    _chatbloc.add(OnMessage(message: text));
+//    response(text);
+  }
 }
+
+//void response(query) async {
+//  print("Inside response()");
+//  final String adminToken = await getAdminToken();
+//  final String _chatURL = _base + _chatEndpoint;
+//  try {
+//    final http.Response resp = await http.post(_chatURL,
+//        headers: <String, String>{
+//          'Content-Type': 'application/json; charset=UTF-8',
+//          'Authorization': 'TOKEN $adminToken'
+//        },
+//        body: jsonEncode(
+//            <String, String>{'session_id': _sessionID, 'message': query}));
+//    if (resp.statusCode == 200) {
+//      ChatMessage message = ChatMessage(
+//        text: (json.decode(resp.body))['response'],
+//        name: "Bot",
+//        type: false,
+//      );
+//    } else {
+//      print(json.decode(resp.body).toString());
+//      throw Exception(json.decode(resp.body));
+//    }
+//  } catch (err) {
+//    print(err);
+//  }
+//}
 
 class ChatMessage extends StatelessWidget {
   final String text;

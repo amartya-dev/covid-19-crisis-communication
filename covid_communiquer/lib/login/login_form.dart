@@ -34,13 +34,7 @@ class _LoginFormState extends State<LoginForm> {
     return state.isFormValid && isPopulated && !state.isSubmitting;
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _loginBloc = BlocProvider.of<LoginBloc>(context);
-    _usernameController.addListener(_onUsernameChanged);
-    _passwordController.addListener(_onPasswordChanged);
-  }
+
 
   @override
   Widget build(BuildContext context) {

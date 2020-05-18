@@ -3,7 +3,7 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:covid_communiquer/bloc/authentication_bloc.dart';
-import 'package:covid_communiquer/home_screen.dart';
+import 'package:covid_communiquer/chat/home_screen.dart';
 import 'package:covid_communiquer/login/login_screen.dart';
 import 'package:covid_communiquer/repository/user_repository.dart';
 import 'package:covid_communiquer/simple_bloc_delegate.dart';
