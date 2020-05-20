@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'dart:async';
 import 'package:covid_communiquer/bloc/authentication_bloc.dart';
 import 'package:covid_communiquer/chat/bloc/chat_bloc.dart';
 //import 'package:covid_communiquer/api_connection/api_connection.dart';

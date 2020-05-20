@@ -11,8 +11,9 @@ class Uninitialized extends AuthenticationState {}
 
 class Authenticated extends AuthenticationState {
   final String displayName;
+  final String sessionId;
 
-  const Authenticated(this.displayName);
+  const Authenticated(this.displayName, this.sessionId);
 
   @override
   List<Object> get props => [displayName];

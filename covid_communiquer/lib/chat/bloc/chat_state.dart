@@ -7,6 +7,17 @@ abstract class ChatState extends Equatable {
   List<Object> get props => [];
 }
 
-class MessageSent extends ChatState {}
+class Loading extends ChatState {}
 
-class ResponseReceived extends ChatState {}
+class Loaded extends ChatState {
+  final List<String> messages;
+  final String sessionId;
+
+  const Loaded({@required this.messages, @required this.sessionId});
+
+  @override
+  List<Object> get props => [messages];
+
+  @override 
+  String toString() => 'Loaded { messages: ${messages.length} }';
+}

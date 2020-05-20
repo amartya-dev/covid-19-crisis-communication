@@ -1,49 +1,45 @@
 import 'dart:async';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:rxdart/rxdart.dart';
-
 import 'package:equatable/equatable.dart';
-import 'package:covid_communiquer/chat/home_screen.dart';
-import 'package:covid_communiquer/api_connection/api_connection.dart';
-import 'package:covid_communiquer/repository/user_repository.dart';
+
+import 'package:covid_communiquer/repository/chat_repository.dart';
+import 'package:covid_communiquer/model/api_model.dart';
 
 part 'chat_event.dart';
 
 part 'chat_state.dart';
 
 class ChatBloc extends Bloc<ChatEvent, ChatState> {
-  final UserRepository _userRepository;
-  final _base = "https://communiquer.herokuapp.com";
-  final _sessionEndpoint = "/api/create_session/";
-  final _chatEndpoint = "/api/chat/";
+  final ChatRepository chatRepository;
 
-  ChatBloc({@required UserRepository userRepository})
-      : assert(userRepository != null),
-        _userRepository = userRepository;
+  ChatBloc({@required this.chatRepository});
 
   @override
-  ChatState get initialState => MessageSent();
+  ChatState get initialState => Loading();
 
   @override
   Stream<ChatState> mapEventToState(
     ChatEvent event,
   ) async* {
+    if (event is ChatStarted) {
+      final messages = [
+        "Hello I'am COVID 19 crisis communication bot, let's start chatting"
+      ];
+      yield Loaded(messages: messages, sessionId: event.sessionId);
+    }
+
     if (event is OnMessage) {
-      yield* _mapOnMessageToState(event.message);
-    }
-    if (event is OnRespond) {
-      yield* _mapOnRespondToState(event.response);
-    }
-  }
+      final chatState = state;
 
-  Stream<ChatState> _mapOnMessageToState(String message) async* {
-    yield MessageSent();
-  }
-
-  Stream<ChatState> _mapOnRespondToState(String response) async* {
-    yield ResponseReceived();
+      if (chatState is Loaded) {
+        Message message =
+            Message(message: event.message, sessionId: event.sessionId);
+        Response response = await chatRepository.getResponse(message);
+        List<String> messagesFormed = [response.responseText.toString()];
+        messagesFormed.addAll(chatState.messages);
+        yield Loaded(messages: messagesFormed, sessionId: chatState.sessionId);
+      }
+    }
   }
 }
