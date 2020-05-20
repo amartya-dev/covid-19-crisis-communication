@@ -83,12 +83,20 @@ class BotCommunicateView(APIView):
                 'text':f'{message}'
             }
         ).get_result()
+        print(response)
         response_messages = ""
+        options = []
         for message in response["output"]["generic"]:
-            response_messages += message["text"]
+            if "text" in message:
+                response_messages += message["text"]
+            elif "options" in message:
+                response_messages += message["title"]
+                for option in message["options"]:
+                    options.append(option)
         return Response(
             {
-                "response": response_messages
+                "response": response_messages,
+                "options": options
             },
             status=status.HTTP_200_OK
         )
