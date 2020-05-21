@@ -79,35 +79,3 @@ Future<String> createSession() async {
   }
 }
 
-List <Option> parseOptions (String responseBody) {
-  final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
-
-  return parsed.map<Option>((json) => Option.fromJson(json)).toList();
-}
-
-Future<Response> getResponse(Message message) async {
-  final String adminToken = await getAdminToken();
-  final http.Response response = await http.post(
-    _chatUrl,
-    headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-      'Authorization': 'TOKEN $adminToken'
-    },
-    body: <String, String>{
-      'session_id': message.sessionId.toString(),
-      'message': message.message.toString()
-    }
-  );
-  if (response.statusCode == 200){
-    return Response(
-      responseText: json.decode(response.body)["response"],
-      options: parseOptions(
-        json.decode(response.body)["options"].toString()
-      )
-    );
-  }
-  else{
-    print(json.decode(response.body).toString());
-    throw Exception(json.decode(response.body));
-  }
-}

@@ -31,6 +31,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
     if (event is OnMessage) {
       final chatState = state;
+      print("State : " + chatState.toString());
+      print("ChatRep : " + chatRepository.toString());
 
       if (chatState is Loaded) {
         Message message =

@@ -16,10 +16,10 @@ class Authenticated extends AuthenticationState {
   const Authenticated(this.displayName, this.sessionId);
 
   @override
-  List<Object> get props => [displayName];
+  List<Object> get props => [displayName,sessionId];
 
   @override
-  String toString() => 'Authenticated { displayName $displayName }';
+  String toString() => 'Authenticated { displayName $displayName , sessionID $sessionId}';
 }
 
 class Unauthenticated extends AuthenticationState {}
