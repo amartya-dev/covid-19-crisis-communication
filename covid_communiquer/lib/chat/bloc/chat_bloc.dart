@@ -24,6 +24,12 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     ChatEvent event,
   ) async* {
     if (event is ChatStarted) {
+      Response dummyMessage = await chatRepository.getResponse(
+        new Message(
+          message: "hello",
+          sessionId: event.sessionId
+        )
+      );
       Messages initialMessage = Messages(
           message:
               "Hello I'am COVID 19 crisis communication bot, let's start chatting",
