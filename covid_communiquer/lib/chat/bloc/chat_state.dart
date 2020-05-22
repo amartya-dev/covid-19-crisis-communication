@@ -10,7 +10,7 @@ abstract class ChatState extends Equatable {
 class Loading extends ChatState {}
 
 class Loaded extends ChatState {
-  final List<String> messages;
+  final List<Messages> messages;
   final String sessionId;
 
   const Loaded({@required this.messages, @required this.sessionId});

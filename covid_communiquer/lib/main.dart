@@ -14,29 +14,22 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   BlocSupervisor.delegate = SimpleBlocDelegate();
   final UserRepository userRepository = UserRepository();
+
   runApp(
     BlocProvider(
       create: (context) =>
           AuthenticationBloc(userRepository: userRepository)..add(AppStarted()),
-      child: App(userRepository: userRepository,chatRepository: null, sessionID: null,),
+      child: App(userRepository: userRepository),
     ),
   );
 }
 
 class App extends StatelessWidget {
   final UserRepository _userRepository;
-  final ChatRepository _chatRepository;
-  final String sessionID;
 
-  App(
-      {Key key,
-      @required UserRepository userRepository,
-      @required ChatRepository chatRepository,
-      @required String sessionID})
+  App({Key key, @required UserRepository userRepository})
       : assert(userRepository != null),
         _userRepository = userRepository,
-        _chatRepository = chatRepository,
-        sessionID = sessionID,
         super(key: key);
 
   @override
@@ -53,9 +46,11 @@ class App extends StatelessWidget {
             );
           }
           if (state is Authenticated) {
+            final ChatRepository _chatRepository =
+                ChatRepository(state.sessionId);
             return HomeScreen(
                 name: state.displayName,
-                sessionID: state.sessionId,
+                sessionId: state.sessionId,
                 chatRepository: _chatRepository);
           }
           return Container();

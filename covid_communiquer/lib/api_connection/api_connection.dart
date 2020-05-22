@@ -8,11 +8,9 @@ final _base = "https://communiquer.herokuapp.com";
 final _tokenEndpoint = "/api-token-auth/";
 final _signUpEndpoint = "/api/users/";
 final _sessionEndpoint = "/api/create_session/";
-final _chatEndpoint = "/api/chat/";
 final _tokenURL = _base + _tokenEndpoint;
 final _signUpUrl = _base + _signUpEndpoint;
 final _createSessionURL = _base + _sessionEndpoint;
-final _chatUrl = _base + _chatEndpoint;
 
 final _adminUsername = 'admin';
 final _adminPassword = 'covidcrisis19';
