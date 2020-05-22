@@ -25,12 +25,10 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   ) async* {
     if (event is ChatStarted) {
       Messages initialMessage = Messages(
-        message: "Hello I'am COVID 19 crisis communication bot, let's start chatting",
-        type: false
-      );
-      final messages = [
-        initialMessage
-      ];
+          message:
+              "Hello I'am COVID 19 crisis communication bot, let's start chatting",
+          type: false);
+      final messages = [initialMessage];
       yield Loaded(messages: messages, sessionId: event.sessionId);
     }
 
@@ -40,20 +38,14 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       print("ChatRep : " + chatRepository.toString());
 
       if (chatState is Loaded) {
-        Messages sentMessage = Messages(
-          message: event.message,
-          type: true
-        );
+//        Messages sentMessage = Messages(message: event.message, type: true);
         Message message =
             Message(message: event.message, sessionId: event.sessionId);
         Response response = await chatRepository.getResponse(message);
-        Messages responseMessage = Messages(
-          message: response.responseText,
-          type: false
-        );
-        List<Messages> messagesFormed = [
-          sentMessage,
-          responseMessage
+        Messages responseMessage =
+            Messages(message: response.responseText, type: false);
+        List<Messages> messagesFormed = [responseMessage
+//          , sentMessage
         ];
         messagesFormed.addAll(chatState.messages);
         yield Loaded(messages: messagesFormed, sessionId: chatState.sessionId);

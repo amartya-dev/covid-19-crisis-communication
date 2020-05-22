@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -19,31 +20,27 @@ class _ChatSpace extends State<ChatSpace> {
   final String name;
   final String sessionId;
   final TextEditingController _textController = new TextEditingController();
+  List<Messages> messages;
 
   _ChatSpace({@required this.name, @required this.sessionId});
 
-  void _handleSubmitted(String text) {
-    _textController.clear();
-    setState(() {
-      BlocProvider.of<ChatBloc>(context)
-          .add(OnMessage(message: text, sessionId: this.sessionId));
-    });
-  }
+
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ChatBloc, ChatState>(builder: (context, state) {
       if (state is Loaded) {
-        final List<Messages> messages = state.messages;
+        messages = state.messages;
         return Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            Center(child: Text('Welcome $name!')),
+            Center(child: Text('Welcome $name !')),
             Flexible(
               child: ListView.builder(
                 padding: EdgeInsets.all(8.0),
                 reverse: true,
-                itemBuilder: (_ , index) {
+                itemBuilder: (_, index) {
+                  print(index.toString() + ": " + messages[index].message);
                   return ChatMessage(
                     name: messages[index].type ? this.name : "Bot",
                     text: messages[index].message,
@@ -66,7 +63,8 @@ class _ChatSpace extends State<ChatSpace> {
                       child: TextField(
                         controller: _textController,
                         onSubmitted: _handleSubmitted,
-                        decoration: InputDecoration.collapsed(
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.fromLTRB(20.0, 5.0, 5.0, 5.0),
                           hintText: "Send a message",
                         ),
                       ),
@@ -85,6 +83,14 @@ class _ChatSpace extends State<ChatSpace> {
           ],
         );
       }
+    });
+  }
+  void _handleSubmitted(String text) {
+    _textController.clear();
+    setState(() {
+      BlocProvider.of<ChatBloc>(context)
+          .add(OnMessage(message: text, sessionId: this.sessionId));
+      messages.insert(0, Messages(message: text, type: true));
     });
   }
 }
