@@ -31,16 +31,9 @@ dependencies:
   rxdart: ^0.24.0
   watson_assistant: ^0.0.3
   flutter_linkify: ^3.1.3
-  cloud_firestore:
-  share:
-  swipe_up:
-  webview_flutter:
-  flutter_swiper:
   charts_flutter:
-  provider:
-  shared_preferences:
-  url_launcher:
-  flutter_launcher_icons:
+  charts_common:
+
 
 dev_dependencies:
   flutter_test:
