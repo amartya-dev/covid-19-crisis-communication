@@ -22,7 +22,6 @@ class _ChatSpace extends State<ChatSpace> {
   final String sessionId;
   final TextEditingController _textController = new TextEditingController();
   List<Messages> messages;
-  List<Option> options;
 
   _ChatSpace({@required this.name, @required this.sessionId});
 
@@ -33,7 +32,6 @@ class _ChatSpace extends State<ChatSpace> {
     return BlocBuilder<ChatBloc, ChatState>(builder: (context, state) {
       if (state is Loaded) {
         messages = state.messages;
-        options = state.options;
         return Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
@@ -43,12 +41,12 @@ class _ChatSpace extends State<ChatSpace> {
                 padding: EdgeInsets.all(8.0),
                 reverse: true,
                 itemBuilder: (_, index) {
-                  print(index.toString() + ": " + messages[index].message);
                   return ChatMessage(
                     name: messages[index].type ? this.name : "Bot",
                     text: messages[index].message,
                     type: messages[index].type,
-                    options: messages[index].type ? [] : options,
+                    options: messages[index].type ? [null] : messages[index].options,
+                    sessionId: sessionId,
                   );
                 },
                 itemCount: messages.length,
@@ -103,9 +101,10 @@ class ChatMessage extends StatelessWidget {
   final String text;
   final String name;
   final bool type;
-  final List<Option> options;
+  final List<Options> options;
+  final String sessionId;
 
-  ChatMessage({this.text, this.name, this.type, this.options});
+  ChatMessage({this.text, this.name, this.type, this.options, this.sessionId});
 
   List<Widget> otherMessage(context) {
     return <Widget>[
@@ -129,17 +128,23 @@ class ChatMessage extends StatelessWidget {
                 children: <Widget>[
                   Text(text),
                   Column(
-                    children: options.map((Option option) {
-                      if(option.label.toString() != null){
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: options.map((Options option) {
+                      if((option.value) != null){
                         return RaisedButton(
                           child: Text((option.label).toString()),
+                          color: Colors.white,
+                          textColor: Colors.orange,
+                          padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                          splashColor: Colors.grey,
                           onPressed: () {
-                            print("${option.value} has been pressed");
+                            BlocProvider.of<ChatBloc>(context)
+                                .add(OnMessage(message: (option.value).toString(), sessionId: sessionId));
                           },
                         );
                       }
                       else{
-                        return Text("No option");
+                        return Container(height: 0.0,width: 0.0,);
                       }
                     }).toList(),
                   )
