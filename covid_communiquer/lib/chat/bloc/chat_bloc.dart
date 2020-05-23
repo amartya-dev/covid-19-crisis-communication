@@ -24,7 +24,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   Stream<ChatState> mapEventToState(
     ChatEvent event,
   ) async* {
-    if (event is ChatStarted) {
+    
+    if (event is ChatStarted) {  
       Response dummyMessage = await chatRepository.getResponse(
           new Message(message: "hello", sessionId: event.sessionId));
       Options initialOption = Options();
@@ -40,10 +41,10 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     if (event is OnMessage) {
       final chatState = state;
       if (chatState is Loaded) {
-//        Messages sentMessage = Messages(message: event.message, type: true);
         Message message =
             Message(message: event.message, sessionId: event.sessionId);
         Response response = await chatRepository.getResponse(message);
+        
         List<Options> optionsFormed = [];
         for (int i = 0; i < response.options.length; i++) {
           Options option = Options(
@@ -51,13 +52,22 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
               value: response.options[i].value);
           optionsFormed.add(option);
         }
+        
         Messages responseMessage =
             Messages(message: response.responseText, type: false, options: optionsFormed);
+        
+        List<Messages> messagesFormed = [];
 
-        List<Messages> messagesFormed = [
-          responseMessage
-//          , sentMessage
-        ];
+        messagesFormed.add(responseMessage);
+
+        if (event.isOption){
+          Messages sentMessage = new Messages(
+            message: event.messageDisplay,
+            type: true
+          );
+          messagesFormed.add(sentMessage);
+        }
+        
         messagesFormed.addAll(chatState.messages);
         yield Loaded(messages: messagesFormed, sessionId: chatState.sessionId);
       }

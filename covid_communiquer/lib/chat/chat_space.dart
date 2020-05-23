@@ -91,7 +91,13 @@ class _ChatSpace extends State<ChatSpace> {
     _textController.clear();
     setState(() {
       BlocProvider.of<ChatBloc>(context)
-          .add(OnMessage(message: text, sessionId: this.sessionId));
+          .add(OnMessage(
+            message: text,
+            sessionId: this.sessionId,
+            isOption: false,
+            messageDisplay: text
+          )
+        );
       messages.insert(0, Messages(message: text, type: true));
     });
   }
@@ -140,7 +146,11 @@ class ChatMessage extends StatelessWidget {
                           onPressed: () {
                             BlocProvider.of<ChatBloc>(context).add(OnMessage(
                                 message: (option.value).toString(),
-                                sessionId: sessionId));
+                                sessionId: sessionId,
+                                isOption: true,
+                                messageDisplay: (option.label).toString()
+                              )
+                            );
                           },
                         );
                       } else {

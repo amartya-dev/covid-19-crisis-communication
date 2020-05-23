@@ -25,10 +25,14 @@ class ChatStarted extends ChatEvent {
 class OnMessage extends ChatEvent {
   final String message;
   final String sessionId;
+  final bool isOption;
+  final String messageDisplay;
 
   const OnMessage({
     @required this.message,
-    @required this.sessionId}
+    @required this.sessionId,
+    @required this.isOption,
+    @required this.messageDisplay}
   );
 
   @override
