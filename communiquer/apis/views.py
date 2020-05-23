@@ -88,9 +88,9 @@ class BotCommunicateView(APIView):
         options = []
         for message in response["output"]["generic"]:
             if "text" in message:
-                response_messages += message["text"]
+                response_messages += message["text"] + "\n"
             elif "options" in message:
-                response_messages += message["title"]
+                response_messages += message["title"] + "\n"
                 for option in message["options"]:
                     options.append(option)
         return Response(

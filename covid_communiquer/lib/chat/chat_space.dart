@@ -24,8 +24,6 @@ class _ChatSpace extends State<ChatSpace> {
 
   _ChatSpace({@required this.name, @required this.sessionId});
 
-
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ChatBloc, ChatState>(builder: (context, state) {
@@ -44,7 +42,8 @@ class _ChatSpace extends State<ChatSpace> {
                     name: messages[index].type ? this.name : "Bot",
                     text: messages[index].message,
                     type: messages[index].type,
-                    options: messages[index].type ? [null] : messages[index].options,
+                    options:
+                        messages[index].type ? [null] : messages[index].options,
                     sessionId: sessionId,
                   );
                 },
@@ -65,7 +64,8 @@ class _ChatSpace extends State<ChatSpace> {
                         controller: _textController,
                         onSubmitted: _handleSubmitted,
                         decoration: InputDecoration(
-                          contentPadding: EdgeInsets.fromLTRB(20.0, 5.0, 5.0, 5.0),
+                          contentPadding:
+                              EdgeInsets.fromLTRB(20.0, 5.0, 5.0, 5.0),
                           hintText: "Send a message",
                         ),
                       ),
@@ -86,6 +86,7 @@ class _ChatSpace extends State<ChatSpace> {
       }
     });
   }
+
   void _handleSubmitted(String text) {
     _textController.clear();
     setState(() {
@@ -123,13 +124,13 @@ class ChatMessage extends StatelessWidget {
             ),
             Container(
               margin: EdgeInsets.only(),
-              child : Column(
+              child: Column(
                 children: <Widget>[
                   Text(text),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: options.map((Options option) {
-                      if((option.value) != null){
+                      if ((option.value) != null) {
                         return RaisedButton(
                           child: Text((option.label).toString()),
                           color: Colors.white,
@@ -137,13 +138,16 @@ class ChatMessage extends StatelessWidget {
                           padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
                           splashColor: Colors.grey,
                           onPressed: () {
-                            BlocProvider.of<ChatBloc>(context)
-                                .add(OnMessage(message: (option.value).toString(), sessionId: sessionId));
+                            BlocProvider.of<ChatBloc>(context).add(OnMessage(
+                                message: (option.value).toString(),
+                                sessionId: sessionId));
                           },
                         );
-                      }
-                      else{
-                        return Container(height: 0.0,width: 0.0,);
+                      } else {
+                        return Container(
+                          height: 0.0,
+                          width: 0.0,
+                        );
                       }
                     }).toList(),
                   )

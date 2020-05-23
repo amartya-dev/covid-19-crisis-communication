@@ -28,8 +28,9 @@ class ChatRepository {
         body: jsonEncode(message.toDatabaseJson())
     );
     if (response.statusCode == 200){
+      print(json.decode(response.body)["response"]);
       return Response(
-          responseText: json.decode(response.body)["response"],
+          responseText: json.decode(utf8.decode(response.bodyBytes))["response"],
           options: parseOptions(
               json.decode(response.body)["options"]
           )
