@@ -20,7 +20,7 @@ class LoginButton extends StatelessWidget {
           color: Colors.white
         ),
       ),
-      disabledColor: Colors.orange,
+      disabledColor: Colors.grey,
       color: Colors.orange,
     );
   }

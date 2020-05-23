@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:covid_communiquer/chat/bloc/chat_bloc.dart';
 import 'package:covid_communiquer/model/chat_model.dart';
-import 'package:covid_communiquer/model/api_model.dart';
 
 class ChatSpace extends StatefulWidget {
   final String name;
