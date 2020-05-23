@@ -26,6 +26,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     ChatEvent event,
   ) async* {
     if (event is ChatStarted) {
+      yield Loading();
       Response dummyMessage = await chatRepository.getResponse(
           new Message(message: "hello", sessionId: event.sessionId));
       Options initialOption = Options();
@@ -41,6 +42,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     if (event is OnMessage) {
       final chatState = state;
       if (chatState is Loaded) {
+        yield Loading();
         Message message =
             Message(message: event.message, sessionId: event.sessionId);
 

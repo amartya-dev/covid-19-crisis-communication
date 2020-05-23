@@ -22,84 +22,102 @@ class _ChatSpace extends State<ChatSpace> {
   final TextEditingController _textController = new TextEditingController();
   List<Messages> messages;
 
+  ChatBloc _chatBloc;
+
   _ChatSpace({@required this.name, @required this.sessionId});
 
   @override
+  void initState() {
+    super.initState();
+    _chatBloc = BlocProvider.of<ChatBloc>(context);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ChatBloc, ChatState>(builder: (context, state) {
+    return BlocListener<ChatBloc, ChatState>(listener: (context, state) {
+      if (state is Loading) {
+        Scaffold.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(SnackBar(
+            content: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text("Communicating ..."),
+                CircularProgressIndicator(),
+              ],
+            ),
+          ));
+      }
       if (state is Loaded) {
         messages = state.messages;
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            Center(child: Text('Welcome $name !')),
-            Flexible(
-              child: ListView.builder(
-                padding: EdgeInsets.all(8.0),
-                reverse: true,
-                itemBuilder: (_, index) {
-                  return ChatMessage(
-                    name: messages[index].type ? this.name : "Bot",
-                    text: messages[index].message,
-                    type: messages[index].type,
-                    options:
-                        messages[index].type ? [null] : messages[index].options,
-                    sessionId: sessionId,
-                  );
-                },
-                itemCount: messages.length,
-              ),
+      }
+    }, 
+    child: BlocBuilder<ChatBloc, ChatState>(builder: (context, state) {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          Center(child: Text('Welcome $name !')),
+          Flexible(
+            child: ListView.builder(
+              padding: EdgeInsets.all(8.0),
+              reverse: true,
+              itemBuilder: (_, index) {
+                return ChatMessage(
+                  name: messages[index].type ? this.name : "Bot",
+                  text: messages[index].message,
+                  type: messages[index].type,
+                  options:
+                      messages[index].type ? [null] : messages[index].options,
+                  sessionId: sessionId,
+                );
+              },
+              itemCount: messages.length,
             ),
-            Divider(
-              height: 2.0,
-            ),
-            Container(
-              decoration: BoxDecoration(color: Theme.of(context).cardColor),
-              child: IconTheme(
-                data: IconThemeData(color: Theme.of(context).accentColor),
-                child: new Row(
-                  children: <Widget>[
-                    Flexible(
-                      child: TextField(
-                        controller: _textController,
-                        onSubmitted: _handleSubmitted,
-                        decoration: InputDecoration(
-                          contentPadding:
-                              EdgeInsets.fromLTRB(20.0, 5.0, 5.0, 5.0),
-                          hintText: "Send a message",
-                        ),
+          ),
+          Divider(
+            height: 2.0,
+          ),
+          Container(
+            decoration: BoxDecoration(color: Theme.of(context).cardColor),
+            child: IconTheme(
+              data: IconThemeData(color: Theme.of(context).accentColor),
+              child: new Row(
+                children: <Widget>[
+                  Flexible(
+                    child: TextField(
+                      controller: _textController,
+                      onSubmitted: _handleSubmitted,
+                      decoration: InputDecoration(
+                        contentPadding:
+                            EdgeInsets.fromLTRB(20.0, 5.0, 5.0, 5.0),
+                        hintText: "Send a message",
                       ),
                     ),
-                    Container(
-                      margin: EdgeInsets.symmetric(horizontal: 6.0),
-                      child: IconButton(
-                        icon: Icon(Icons.send),
-                        onPressed: () => _handleSubmitted(_textController.text),
-                      ),
-                    )
-                  ],
-                ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: 6.0),
+                    child: IconButton(
+                      icon: Icon(Icons.send),
+                      onPressed: () => _handleSubmitted(_textController.text),
+                    ),
+                  )
+                ],
               ),
             ),
-          ],
-        );
-      }
-    });
+          ),
+        ],
+      );
+    }));
   }
 
   void _handleSubmitted(String text) {
+    messages.insert(0, Messages(message: text, type: true));
+    BlocProvider.of<ChatBloc>(context).add(OnMessage(
+        message: text,
+        sessionId: this.sessionId,
+        isOption: false,
+        messageDisplay: text));
     _textController.clear();
-    setState(() {
-      BlocProvider.of<ChatBloc>(context)
-          .add(OnMessage(
-            message: text,
-            sessionId: this.sessionId,
-            isOption: false,
-            messageDisplay: text
-          )
-        );
-      messages.insert(0, Messages(message: text, type: true));
-    });
   }
 }
 
@@ -148,9 +166,7 @@ class ChatMessage extends StatelessWidget {
                                 message: (option.value).toString(),
                                 sessionId: sessionId,
                                 isOption: true,
-                                messageDisplay: (option.label).toString()
-                              )
-                            );
+                                messageDisplay: (option.label).toString()));
                           },
                         );
                       } else {
