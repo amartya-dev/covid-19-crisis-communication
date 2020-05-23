@@ -35,7 +35,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
               "Hello I'am COVID 19 crisis communication bot, let's start chatting",
           type: false);
       final messages = [initialMessage];
-      yield Loaded(messages: messages, sessionId: event.sessionId);
+      final options = [Option()];
+      yield Loaded(messages: messages,options: options, sessionId: event.sessionId);
     }
 
     if (event is OnMessage) {
@@ -50,11 +51,16 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         Response response = await chatRepository.getResponse(message);
         Messages responseMessage =
             Messages(message: response.responseText, type: false);
+        List<Option> optionsFormed = [];
+        for(int i=0;i<response.options.length;i++){
+          Option option = Option(label: response.options[i].label, value: response.options[i].value);
+          optionsFormed.add(option);
+        }
         List<Messages> messagesFormed = [responseMessage
 //          , sentMessage
         ];
         messagesFormed.addAll(chatState.messages);
-        yield Loaded(messages: messagesFormed, sessionId: chatState.sessionId);
+        yield Loaded(messages: messagesFormed,options: optionsFormed, sessionId: chatState.sessionId);
       }
     }
   }

@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:covid_communiquer/chat/bloc/chat_bloc.dart';
 import 'package:covid_communiquer/model/chat_model.dart';
+import 'package:covid_communiquer/model/api_model.dart';
 
 class ChatSpace extends StatefulWidget {
   final String name;
@@ -21,6 +22,7 @@ class _ChatSpace extends State<ChatSpace> {
   final String sessionId;
   final TextEditingController _textController = new TextEditingController();
   List<Messages> messages;
+  List<Option> options;
 
   _ChatSpace({@required this.name, @required this.sessionId});
 
@@ -31,6 +33,7 @@ class _ChatSpace extends State<ChatSpace> {
     return BlocBuilder<ChatBloc, ChatState>(builder: (context, state) {
       if (state is Loaded) {
         messages = state.messages;
+        options = state.options;
         return Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
@@ -45,6 +48,7 @@ class _ChatSpace extends State<ChatSpace> {
                     name: messages[index].type ? this.name : "Bot",
                     text: messages[index].message,
                     type: messages[index].type,
+                    options: messages[index].type ? [] : options,
                   );
                 },
                 itemCount: messages.length,
@@ -99,8 +103,9 @@ class ChatMessage extends StatelessWidget {
   final String text;
   final String name;
   final bool type;
+  final List<Option> options;
 
-  ChatMessage({this.text, this.name, this.type});
+  ChatMessage({this.text, this.name, this.type, this.options});
 
   List<Widget> otherMessage(context) {
     return <Widget>[
@@ -120,7 +125,26 @@ class ChatMessage extends StatelessWidget {
             ),
             Container(
               margin: EdgeInsets.only(),
-              child: Text(text),
+              child : Column(
+                children: <Widget>[
+                  Text(text),
+                  Column(
+                    children: options.map((Option option) {
+                      if(option.label.toString() != null){
+                        return RaisedButton(
+                          child: Text((option.label).toString()),
+                          onPressed: () {
+                            print("${option.value} has been pressed");
+                          },
+                        );
+                      }
+                      else{
+                        return Text("No option");
+                      }
+                    }).toList(),
+                  )
+                ],
+              ),
             ),
           ],
         ),

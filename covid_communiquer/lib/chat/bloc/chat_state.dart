@@ -11,9 +11,10 @@ class Loading extends ChatState {}
 
 class Loaded extends ChatState {
   final List<Messages> messages;
+  final List<Option> options;
   final String sessionId;
 
-  const Loaded({@required this.messages, @required this.sessionId});
+  const Loaded({@required this.messages,@required this.options, @required this.sessionId});
 
   @override
   List<Object> get props => [messages];
