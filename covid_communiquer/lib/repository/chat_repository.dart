@@ -37,8 +37,7 @@ class ChatRepository {
       );
     }
     else{
-      print(json.decode(response.body).toString());
-      throw Exception(json.decode(response.body));
+      throw Exception("Session Error");
     }
   }
 }

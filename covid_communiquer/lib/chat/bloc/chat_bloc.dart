@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
+import 'package:covid_communiquer/api_connection/api_connection.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
@@ -24,8 +25,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   Stream<ChatState> mapEventToState(
     ChatEvent event,
   ) async* {
-    
-    if (event is ChatStarted) {  
+    if (event is ChatStarted) {
       Response dummyMessage = await chatRepository.getResponse(
           new Message(message: "hello", sessionId: event.sessionId));
       Options initialOption = Options();
@@ -43,33 +43,69 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       if (chatState is Loaded) {
         Message message =
             Message(message: event.message, sessionId: event.sessionId);
-        Response response = await chatRepository.getResponse(message);
-        
-        List<Options> optionsFormed = [];
-        for (int i = 0; i < response.options.length; i++) {
-          Options option = Options(
-              label: response.options[i].label,
-              value: response.options[i].value);
-          optionsFormed.add(option);
-        }
-        
-        Messages responseMessage =
-            Messages(message: response.responseText, type: false, options: optionsFormed);
-        
-        List<Messages> messagesFormed = [];
 
-        messagesFormed.add(responseMessage);
+        try {
+          Response response = await chatRepository.getResponse(message);
+          List<Options> optionsFormed = [];
+          for (int i = 0; i < response.options.length; i++) {
+            Options option = Options(
+                label: response.options[i].label,
+                value: response.options[i].value);
+            optionsFormed.add(option);
+          }
 
-        if (event.isOption){
-          Messages sentMessage = new Messages(
-            message: event.messageDisplay,
-            type: true
-          );
-          messagesFormed.add(sentMessage);
+          Messages responseMessage = Messages(
+              message: response.responseText,
+              type: false,
+              options: optionsFormed);
+
+          List<Messages> messagesFormed = [];
+
+          messagesFormed.add(responseMessage);
+
+          if (event.isOption) {
+            Messages sentMessage =
+                new Messages(message: event.messageDisplay, type: true);
+            messagesFormed.add(sentMessage);
+          }
+
+          messagesFormed.addAll(chatState.messages);
+          yield Loaded(
+              messages: messagesFormed, sessionId: chatState.sessionId);
+        } catch (Exception) {
+          print("Exception occured");
+          String sessionId = await createSession();
+          Response dummyMessage = await chatRepository
+              .getResponse(new Message(message: "hello", sessionId: sessionId));
+          message.sessionId = sessionId;
+          Response response = await chatRepository.getResponse(message);
+          List<Options> optionsFormed = [];
+          for (int i = 0; i < response.options.length; i++) {
+            Options option = Options(
+                label: response.options[i].label,
+                value: response.options[i].value);
+            optionsFormed.add(option);
+          }
+
+          Messages responseMessage = Messages(
+              message: response.responseText,
+              type: false,
+              options: optionsFormed);
+
+          List<Messages> messagesFormed = [];
+
+          messagesFormed.add(responseMessage);
+
+          if (event.isOption) {
+            Messages sentMessage =
+                new Messages(message: event.messageDisplay, type: true);
+            messagesFormed.add(sentMessage);
+          }
+
+          messagesFormed.addAll(chatState.messages);
+          yield Loaded(
+              messages: messagesFormed, sessionId: chatState.sessionId);
         }
-        
-        messagesFormed.addAll(chatState.messages);
-        yield Loaded(messages: messagesFormed, sessionId: chatState.sessionId);
       }
     }
   }
