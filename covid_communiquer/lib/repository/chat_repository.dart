@@ -23,7 +23,6 @@ class ChatRepository {
   Future<Response> getResponse(Message message) async {
     final String adminToken = await getAdminToken();
     final String userToken = await daoObject.getUserToken(0);
-    print("UserToken: " + userToken);
     final http.Response response = await http.post(
         _chatUrl,
         headers: <String, String>{
