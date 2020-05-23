@@ -47,24 +47,11 @@ class Profile(models.Model):
     )
 
 
-class TravelRequest(models.Model):
-    datetime = models.DateTimeField(default=timezone.now)
-    reason = models.TextField()
-    relevant_document_proof = models.FileField(
-        upload_to="prrofs/%Y/%m/%d/"
-    )
-    user = models.ForeignKey(
-        to=User,
-        on_delete=models.CASCADE
-    )
-
-
 class CheckupRequest(models.Model):
     user = models.ForeignKey(
         to=User,
         on_delete=models.CASCADE
     )
-    suitable_datetime = models.DateTimeField()
 
 
 class DeliveryRequest(models.Model):
@@ -72,13 +59,9 @@ class DeliveryRequest(models.Model):
         to=User,
         on_delete=models.CASCADE
     )
-
-
-class GroceryItem(models.Model):
-    delivery_request = models.ForeignKey(
-        to=DeliveryRequest,
-        on_delete=models.CASCADE
+    vendor = models.ForeignKey(
+        to=User,
+        on_delete=models.CASCADE,
+        related_name='vendor'
     )
-    item = models.CharField(
-        max_length=200
-    )
+    details = models.TextField()
