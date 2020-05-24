@@ -2,6 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'dart:async';
+import 'package:flutter_linkify/flutter_linkify.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'package:covid_communiquer/chat/bloc/chat_bloc.dart';
 import 'package:covid_communiquer/model/chat_model.dart';
@@ -150,7 +153,10 @@ class ChatMessage extends StatelessWidget {
               margin: EdgeInsets.only(),
               child: Column(
                 children: <Widget>[
-                  Text(text),
+                  Linkify(
+                    onOpen: _onOpen,
+                    text: text
+                  ),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: options.map((Options option) {
@@ -246,6 +252,14 @@ class ChatMessage extends StatelessWidget {
         ),
       )
     ];
+  }
+
+  Future<void> _onOpen(LinkableElement link) async {
+    if (await canLaunch(link.url)) {
+      await launch(link.url);
+    } else {
+      throw 'Could not launch $link';
+    }
   }
 
   @override
