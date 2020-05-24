@@ -129,9 +129,9 @@ class _SimpleLineChart extends State<SimpleLineChart> {
           ),
         ),
       ),
-//      Padding(
-//        padding: EdgeInsets.fromLTRB(20.0, 50.0, 0.0, 0.0),
-//        child:
+      Padding(
+        padding: EdgeInsets.fromLTRB(20.0, 50.0, 0.0, 0.0),
+        child:
         SizedBox(
           height: MediaQuery.of(context).size.height * 0.55,
           width: MediaQuery.of(context).size.width * 0.9,
@@ -143,7 +143,7 @@ class _SimpleLineChart extends State<SimpleLineChart> {
             animate: true,
             animationDuration: Duration(seconds: 1),
           )),
-//        ),
+        ),
       )
     ]);
   }
