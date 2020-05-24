@@ -76,6 +76,7 @@ class _RegisterFormState extends State<RegisterForm> {
   final TextEditingController _pinCodeController = TextEditingController();
 
   RegisterBloc _registerBloc;
+  bool passwordVisible = true;
 
   bool get isPopulated =>
       _userNameController.text.isNotEmpty &&
@@ -91,6 +92,7 @@ class _RegisterFormState extends State<RegisterForm> {
   @override
   void initState() {
     super.initState();
+    passwordVisible = true;
     _registerBloc = BlocProvider.of<RegisterBloc>(context);
     _emailController.addListener(_onEmailChanged);
     _passwordController.addListener(_onPasswordChanged);
@@ -205,8 +207,18 @@ class _RegisterFormState extends State<RegisterForm> {
                     decoration: InputDecoration(
                       icon: Icon(Icons.lock),
                       labelText: 'Password',
+                      suffixIcon: IconButton(
+                          icon: passwordVisible
+                              ? Icon(Icons.visibility)
+                              : Icon(Icons.visibility_off),
+                          color: Theme.of(context).primaryColorDark,
+                          onPressed: () {
+                            setState(() {
+                              passwordVisible = !passwordVisible;
+                            });
+                          }),
                     ),
-                    obscureText: true,
+                    obscureText: passwordVisible,
                     autocorrect: false,
                     autovalidate: true,
                     validator: (_) {
@@ -283,6 +295,9 @@ class _RegisterFormState extends State<RegisterForm> {
                     validator: (_) {
                       return !state.isPinCodeValid ? 'Invalid Pin Code' : null;
                     },
+                  ),
+                  SizedBox(
+                    height: 25.0,
                   ),
                   RegisterButton(
                     onPressed: isRegisterButtonEnabled(state)

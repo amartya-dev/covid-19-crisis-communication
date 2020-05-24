@@ -25,6 +25,7 @@ class _LoginFormState extends State<LoginForm> {
   LoginBloc _loginBloc;
 
   UserRepository get _userRepository => widget._userRepository;
+  bool passwordVisible = true;
 
   bool get isPopulated =>
       _usernameController.text.isNotEmpty &&
@@ -37,6 +38,7 @@ class _LoginFormState extends State<LoginForm> {
   @override
   void initState() {
     super.initState();
+    passwordVisible = true;
     _loginBloc = BlocProvider.of<LoginBloc>(context);
     _usernameController.addListener(_onUsernameChanged);
     _passwordController.addListener(_onPasswordChanged);
@@ -111,10 +113,20 @@ class _LoginFormState extends State<LoginForm> {
                       TextFormField(
                         controller: _passwordController,
                         decoration: InputDecoration(
-                          icon: Icon(Icons.lock),
-                          labelText: 'Password',
-                        ),
-                        obscureText: true,
+                            icon: Icon(Icons.lock),
+                            labelText: 'Password',
+                            suffixIcon: IconButton(
+                              icon: passwordVisible
+                                  ? Icon(Icons.visibility)
+                                  : Icon(Icons.visibility_off),
+                              color: Theme.of(context).primaryColorDark,
+                              onPressed: () {
+                                setState(() {
+                                  passwordVisible = !passwordVisible;
+                                });
+                              },
+                            )),
+                        obscureText: passwordVisible,
                         autovalidate: true,
                         autocorrect: false,
                         validator: (_) {
