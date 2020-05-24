@@ -15,6 +15,7 @@ from rest_framework.permissions import IsAdminUser, IsAuthenticated
 
 from apis.serializers import ProfileSerializer
 from main.models import Profile, DeliveryRequest, CheckupRequest
+from main.getstatecount import getStateCaseCount
 
 VERSION = os.environ.get('watson_version', '2020-04-01')
 SERVICE_URL = os.environ.get('watson_service_url', 'https://abc.com/')
@@ -82,6 +83,7 @@ class BotCommunicateView(APIView):
         session_id = request.data["session_id"]
         try:
             print(request.user.username)
+            print(request.auth.key)
             userProfile = get_object_or_404(Profile, user=request.user)
             pinCode = userProfile.address.pin_code
             ofile = open("pincode.dat", "rb")
@@ -89,9 +91,17 @@ class BotCommunicateView(APIView):
             district = pinCodeMapping[pinCode]
             state = userProfile.address.state
             context_to_send = {
-                "userlocation": district,
-                "state": state
+                'skills': {
+                    'main skill': {
+                        'user_defined': {
+                            'userlocation': district,
+                            'state': state,
+                            'accesstoken': request.auth.key
+                        }
+                    }
+                }
             }
+            print(context_to_send)
         except Http404:
             print ("HTTP 404 error")
             context_to_send = {}
@@ -136,7 +146,7 @@ class GetVendorsView(APIView):
         for user in users:
             vendorList.append({
                 "username": user.user.username,
-                "displayName": user.first_name
+                "displayName": user.user.first_name
             })
         return Response(
             {
@@ -152,12 +162,30 @@ class DeliveryRequestView(APIView):
 
     def post(self, request):
         vendorSelected = get_object_or_404(User, username=request.data["vendor"])
-        items = request.data["items"]
-        DeliveryRequest.objects.create(
-            user=self.request.user,
-            vendor=vendorSelected,
-            details=items
-        )
+
+        try:
+            existing = get_object_or_404(DeliveryRequest, user=request.user, vendor=vendorSelected)
+            return Response(
+                {
+                    "message": "Already Registered request",
+                    "request_id": existing.id
+                },
+                status=status.HTTP_200_OK
+            )
+        except Http404:
+            items = request.data["items"]
+            d = DeliveryRequest.objects.create(
+                user=request.user,
+                vendor=vendorSelected,
+                details=items
+            )
+            return Response(
+                {
+                    "message": "Your request is registered",
+                    "request_id": d.id
+                },
+                status=status.HTTP_201_CREATED
+            )
 
 
 class CheckupRequestView(APIView):
@@ -165,6 +193,40 @@ class CheckupRequestView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        CheckupRequest.objects.create(
-            user=request.user
+        print(request.data)
+        try:
+            exist = get_object_or_404(CheckupRequest, user=request.user)
+            res = {
+                "message": "Appointment already set",
+                "date": str(exist.date),
+                "time": str(exist.time)
+            }
+        except Http404:
+            CheckupRequest.objects.create(
+                user=request.user,
+                date=request.data["date"],
+                time=request.data["time"]
+            )
+            res = {
+                "message": "Succesful",
+                "date": request.data["data"],
+                "time": request.data["time"]
+            }
+        return Response(
+            res,
+            status=status.HTTP_200_OK
+        )
+
+
+class GetStateDataView(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        stateSelected = request.data["state"].lower()
+        casesDict = getStateCaseCount(stateSelected)
+
+        return Response(
+            casesDict,
+            status=status.HTTP_200_OK
         )

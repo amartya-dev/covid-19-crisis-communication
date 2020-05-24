@@ -5,7 +5,7 @@ from django.utils import timezone
 STATE_CHOICES = (("Andhra Pradesh", "Andhra Pradesh"), ("Arunachal Pradesh ", "Arunachal Pradesh "), ("Assam", "Assam"),
                  ("Bihar", "Bihar"), ("Chhattisgarh", "Chhattisgarh"), ("Goa", "Goa"), ("Gujarat", "Gujarat"),
                  ("Haryana", "Haryana"), ("Himachal Pradesh", "Himachal Pradesh"),
-                 ("Jammu and Kashmir ", "Jammu and Kashmir "), ("Jharkhand", "Jharkhand"), ("Karnataka", "Karnataka"),
+                 ("Jammu and Kashmir", "Jammu and Kashmir"), ("Jharkhand", "Jharkhand"), ("Karnataka", "Karnataka"),
                  ("Kerala", "Kerala"), ("Madhya Pradesh", "Madhya Pradesh"), ("Maharashtra", "Maharashtra"),
                  ("Manipur", "Manipur"), ("Meghalaya", "Meghalaya"), ("Mizoram", "Mizoram"), ("Nagaland", "Nagaland"),
                  ("Odisha", "Odisha"), ("Punjab", "Punjab"), ("Rajasthan", "Rajasthan"), ("Sikkim", "Sikkim"),
@@ -52,6 +52,8 @@ class CheckupRequest(models.Model):
         to=User,
         on_delete=models.CASCADE
     )
+    date = models.DateField()
+    time = models.TimeField()
 
 
 class DeliveryRequest(models.Model):
