@@ -23,8 +23,7 @@ Login Screen:<br>
 ![Login Screen](https://github.com/amartya-dev/covid-19-crisis-communication/blob/master/Snapshots/LoginScreen.jpeg)
 <br>
 Chat Samples:<br>
-![First Chatbot Screen](https://github.com/amartya-dev/covid-19-crisis-communication/blob/master/Snapshots/first.jpeg)
-![Second Chatbot Screen](https://github.com/amartya-dev/covid-19-crisis-communication/blob/master/Snapshots/second.jpeg)
+![First Chatbot Screen](https://github.com/amartya-dev/covid-19-crisis-communication/blob/master/Snapshots/first.jpeg) ![Second Chatbot Screen](https://github.com/amartya-dev/covid-19-crisis-communication/blob/master/Snapshots/second.jpeg)
 <br>
 Analytics Dashboard<br>
 ![Dashboard Screen](https://github.com/amartya-dev/covid-19-crisis-communication/blob/master/Snapshots/third.jpeg)
