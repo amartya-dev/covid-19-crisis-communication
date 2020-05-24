@@ -89,14 +89,16 @@ class _SimpleLineChart extends State<SimpleLineChart> {
       data.add(new GraphParamsNumbers(i, param.deaths));
       i++;
     }
-    _seriesList.clear();
-    _seriesList.add(charts.Series(
-        data: data,
-        domainFn: (GraphParamsNumbers grp, _) => grp.number,
-        measureFn: (GraphParamsNumbers grp, _) => grp.deaths,
-        colorFn: (GraphParamsNumbers grp, _) =>
-            charts.ColorUtil.fromDartColor(Colors.deepPurple),
-        id: "COVID 19 DATA"));
+    setState(() {
+      _seriesList.clear();
+      _seriesList.add(charts.Series(
+          data: data,
+          domainFn: (GraphParamsNumbers grp, _) => grp.number,
+          measureFn: (GraphParamsNumbers grp, _) => grp.deaths,
+          colorFn: (GraphParamsNumbers grp, _) =>
+              charts.ColorUtil.fromDartColor(Colors.deepPurple),
+          id: "COVID 19 DATA"));
+    });
   }
 
   @override
@@ -127,16 +129,21 @@ class _SimpleLineChart extends State<SimpleLineChart> {
           ),
         ),
       ),
-      SizedBox(
-        height: 10.0,
-      ),
-      Expanded(
-          child: charts.LineChart(
-        _seriesList,
-        defaultRenderer:
-            new charts.LineRendererConfig(includeArea: true, stacked: true),
-        animate: true,
-      ))
+      Padding(
+        padding: EdgeInsets.fromLTRB(20.0, 50.0, 0.0, 0.0),
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height * 0.55,
+          width: MediaQuery.of(context).size.width * 0.9,
+          child: Expanded(
+              child: charts.LineChart(
+            this._seriesList,
+            defaultRenderer:
+                new charts.LineRendererConfig(includeArea: true, stacked: true),
+            animate: true,
+            animationDuration: Duration(seconds: 1),
+          )),
+        ),
+      )
     ]);
   }
 }
