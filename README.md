@@ -19,13 +19,13 @@ A ChatBot for essential communication and relief during the Covid-19 Crisis
 
 # Snapshots
 
-Login Screen:
+Login Screen:<br>
 ![Login Screen](https://github.com/amartya-dev/covid-19-crisis-communication/blob/master/Snapshots/LoginScreen.jpeg)
-
-Chat Samples:
+<br>
+Chat Samples:<br>
 ![First Chatbot Screen](https://github.com/amartya-dev/covid-19-crisis-communication/blob/master/Snapshots/first.jpeg)
 ![Second Chatbot Screen](https://github.com/amartya-dev/covid-19-crisis-communication/blob/master/Snapshots/second.jpeg)
-
-Analytics Dashboard
+<br>
+Analytics Dashboard<br>
 ![Dashboard Screen](https://github.com/amartya-dev/covid-19-crisis-communication/blob/master/Snapshots/third.jpeg)
 
