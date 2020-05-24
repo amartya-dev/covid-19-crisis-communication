@@ -135,7 +135,7 @@ class _SimpleLineChart extends State<SimpleLineChart> {
         SizedBox(
           height: MediaQuery.of(context).size.height * 0.55,
           width: MediaQuery.of(context).size.width * 0.9,
-          child: Expanded(
+          child: Container(
               child: charts.LineChart(
             this._seriesList,
             defaultRenderer:
