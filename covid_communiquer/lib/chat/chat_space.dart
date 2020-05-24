@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:covid_communiquer/chat/bloc/chat_bloc.dart';
@@ -51,8 +52,7 @@ class _ChatSpace extends State<ChatSpace> {
       if (state is Loaded) {
         messages = state.messages;
       }
-    }, 
-    child: BlocBuilder<ChatBloc, ChatState>(builder: (context, state) {
+    }, child: BlocBuilder<ChatBloc, ChatState>(builder: (context, state) {
       return Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
@@ -155,20 +155,53 @@ class ChatMessage extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: options.map((Options option) {
                       if ((option.value) != null) {
-                        return RaisedButton(
-                          child: Text((option.label).toString()),
-                          color: Colors.white,
-                          textColor: Colors.orange,
-                          padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                          splashColor: Colors.grey,
-                          onPressed: () {
-                            BlocProvider.of<ChatBloc>(context).add(OnMessage(
-                                message: (option.value).toString(),
-                                sessionId: sessionId,
-                                isOption: true,
-                                messageDisplay: (option.label).toString()));
-                          },
-                        );
+                        return Container(
+                            padding: EdgeInsets.all(1.0),
+                            child: Column(
+                              children: <Widget>[
+                                Container(
+//                                  decoration: BoxDecoration(
+//                                    border: Border(
+//                                      left: BorderSide(
+//                                          width: 5.0,
+//                                          style: BorderStyle.solid,
+//                                          color: Colors.lightBlueAccent),
+////                                        top: BorderSide(
+////                                            width: 3.0,
+////                                            color: Colors.lightBlue.shade600),
+////                                        right: BorderSide(
+////                                            width: 3.0,
+////                                            color: Colors.lightBlue.shade600),
+////                                        bottom: BorderSide(
+////                                            width: 3.0,
+////                                            color: Colors.lightBlue.shade600)
+//                                    ),
+//                                  ),
+                                  child: RaisedButton(
+                                    child: Text((option.label).toString()),
+                                    color: Colors.white,
+                                    textColor: Colors.orange,
+                                    padding: EdgeInsets.all(10.0),
+                                    splashColor: Colors.limeAccent,
+                                    onPressed: () {
+                                      BlocProvider.of<ChatBloc>(context).add(
+                                          OnMessage(
+                                              message:
+                                                  (option.value).toString(),
+                                              sessionId: sessionId,
+                                              isOption: true,
+                                              messageDisplay:
+                                                  (option.label).toString()));
+                                    },
+                                  ),
+                                ),
+                                Container(
+                                  child: SizedBox(
+                                    height: 10.0,
+                                  ),
+                                )
+                              ],
+                            ));
                       } else {
                         return Container(
                           height: 0.0,
