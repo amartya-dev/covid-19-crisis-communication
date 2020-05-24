@@ -1,14 +1,18 @@
+import 'package:covid_communiquer/model/api_model.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:charts_flutter/flutter.dart' as charts;
 
+import 'package:covid_communiquer/api_connection/api_connection.dart';
 
 class SimpleLineChart extends StatefulWidget {
   State<SimpleLineChart> createState() => _SimpleLineChart();
 }
 
 class _SimpleLineChart extends State<SimpleLineChart> {
-  List<charts.Series> seriesList;
+  List<charts.Series<GraphParamsNumbers, int>> _seriesList;
+  List<charts.Series<Sales, int>> _seriesLineData;
+
   static const STATE_DROPDOWN_MENU_ITEMS = [
     DropdownMenuItem(
         value: "Andhra Pradesh", child: const Text("Andhra Pradesh")),
@@ -62,97 +66,91 @@ class _SimpleLineChart extends State<SimpleLineChart> {
   ];
 
   var _state = "Karnataka";
+  List<GraphParams> gp;
+
+  @override
+  void initState() {
+    super.initState();
+    _seriesList = List<charts.Series<GraphParamsNumbers, int>>();
+    _seriesLineData = List<charts.Series<Sales, int>>();
+    _callThatFunction();
+  }
+
+  _callThatFunction() async {
+    gp = await getGraphParams(_state);
+    await _graphData(gp);
+  }
+
+  _graphData(List<GraphParams> gp) {
+    var data = List<GraphParamsNumbers>();
+    int i = 0;
+    for (GraphParams param in gp) {
+      print(param.date + " : " + param.deaths.toString());
+      data.add(new GraphParamsNumbers(i, param.deaths));
+      i++;
+    }
+    _seriesList.clear();
+    _seriesList.add(charts.Series(
+        data: data,
+        domainFn: (GraphParamsNumbers grp, _) => grp.number,
+        measureFn: (GraphParamsNumbers grp, _) => grp.deaths,
+        colorFn: (GraphParamsNumbers grp, _) =>
+            charts.ColorUtil.fromDartColor(Colors.deepPurple),
+        id: "COVID 19 DATA"));
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        Padding(
-          padding: EdgeInsets.all(20),
-          child: InputDecorator(
-            decoration: InputDecoration(
-              errorStyle: TextStyle(color: Colors.redAccent),
-              icon: Icon(Icons.location_city),
-              hintText: 'Select State',
-              labelText: 'Select State',
-            ),
-            child: DropdownButtonHideUnderline(
-              child: DropdownButton<String>(
-                items: STATE_DROPDOWN_MENU_ITEMS,
-                value: _state,
-                isDense: true,
-                onChanged: (String value) {
-                  _getNumbersOfThisState(value);
-                  setState(() {
-                    this._state = value;
-                  });
-                },
-              ),
+    return Column(children: <Widget>[
+      Padding(
+        padding: EdgeInsets.all(20),
+        child: InputDecorator(
+          decoration: InputDecoration(
+            errorStyle: TextStyle(color: Colors.redAccent),
+            icon: Icon(Icons.location_city),
+            hintText: 'Select State',
+            labelText: 'Select State',
+          ),
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton<String>(
+              items: STATE_DROPDOWN_MENU_ITEMS,
+              value: _state,
+              isDense: true,
+              onChanged: (String value) async {
+                gp = await getGraphParams(value);
+                setState(() {
+                  this._state = value;
+                });
+                await _graphData(gp);
+              },
             ),
           ),
-        )
-    ]
-    );
+        ),
+      ),
+      SizedBox(
+        height: 10.0,
+      ),
+      Expanded(
+          child: charts.LineChart(
+        _seriesList,
+        defaultRenderer:
+            new charts.LineRendererConfig(includeArea: true, stacked: true),
+        animate: true,
+      ))
+    ]);
   }
-
-//  Future<List<charts.Series<Deaths,int>>> _getNumbersOfThisState(String stateName) async{
-//    await return [
-//      new charts.Series<Deaths, int>(
-//        id: 'Sales',
-//        colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
-//        domainFn: (Deaths sales, _) => sales.year,
-//        measureFn: (Deaths sales, _) => sales.sales,
-//        data: data,
-//      )
-//    ];
-//  }
-
-
-//  final List<charts.Series> seriesList;
-//  final bool animate;
-
-//  SimpleLineChart(this.seriesList, {this.animate});
-//
-//  /// Creates a [LineChart] with sample data and no transition.
-//  factory SimpleLineChart.withSampleData() {
-//    return new SimpleLineChart(
-//      _createSampleData(),
-//      // Disable animations for image tests.
-//      animate: false,
-//    );
-//  }
-//
-//
-//  @override
-//  Widget build(BuildContext context) {
-//    return new charts.LineChart(seriesList, animate: animate);
-//  }
-//
-//  /// Create one series with sample hard coded data.
-//  static List<charts.Series<Deaths, int>> _createSampleData() {
-//    final data = [
-//      new Deaths(0, 5),
-//      new Deaths(1, 25),
-//      new Deaths(2, 100),
-//      new Deaths(3, 75),
-//    ];
-//
-//    return [
-//      new charts.Series<Deaths, int>(
-//        id: 'Sales',
-//        colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
-//        domainFn: (Deaths sales, _) => sales.year,
-//        measureFn: (Deaths sales, _) => sales.sales,
-//        data: data,
-//      )
-//    ];
-//  }
 }
 
+class GraphParamsNumbers {
+  int number;
+  int deaths;
 
-//class Deaths {
-//  final int year;
-//  final int sales;
-//
-//  Deaths(this.year, this.sales);
-//}
+  GraphParamsNumbers(this.number, this.deaths);
+}
+
+class Sales {
+  int yearval;
+  int salesval;
+
+  Sales(this.yearval, this.salesval);
+}

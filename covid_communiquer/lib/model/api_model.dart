@@ -77,16 +77,10 @@ class Option {
   String label;
   String value;
 
-  Option({
-    this.label,
-    this.value
-  });
+  Option({this.label, this.value});
 
   factory Option.fromJson(Map<String, dynamic> json) {
-    return Option(
-      label: json["label"],
-      value: json["value"]["input"]["text"]
-    );
+    return Option(label: json["label"], value: json["value"]["input"]["text"]);
   }
 }
 
@@ -94,23 +88,24 @@ class Response {
   String responseText;
   List<Option> options;
 
-  Response({
-    this.responseText,
-    this.options
-  });
+  Response({this.responseText, this.options});
 }
 
 class Message {
   String message;
   String sessionId;
 
-  Message({
-    this.message,
-    this.sessionId
-  });
+  Message({this.message, this.sessionId});
 
-  Map <String, dynamic> toDatabaseJson() => {
-    "message": this.message,
-    "session_id": this.sessionId
-  };
+  Map<String, dynamic> toDatabaseJson() =>
+      {"message": this.message, "session_id": this.sessionId};
 }
+
+class GraphParams {
+  String date;
+  int deaths;
+
+  GraphParams({this.date, this.deaths});
+}
+
+
