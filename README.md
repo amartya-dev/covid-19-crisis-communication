@@ -1,5 +1,5 @@
 # covid-19-crisis-communication
-A ChatBot for essential communication and relief during the Covid-19 Crisis
+A ChatBot for essential communication and relief during the Covid-19 Crisis. You can download the apk by clicking <a href="https://github.com/amartya-dev/covid-19-crisis-communication/raw/master/app-release.apk">here</a>
 
 # ToDo
 - [x] Add a server application in Django for processing all the necessary tasks
